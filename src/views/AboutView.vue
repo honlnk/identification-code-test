@@ -1,63 +1,97 @@
 <template>
-  <div>
-    <video ref="video" width="640" height="480" @play="startCamera"></video>
-    <pre>{{ barcodeData }}</pre>
+  <div class='AboutView'>
+    <!-- 镜头区域 -->
+    <video ref="video" id="video" class="scan-video" autoplay></video>
+
+    <button @click="startScan">开始扫码</button>
+
+    <ul>
+      <li v-for="(item, index) in scanResults" :key="index">{{ item }}</li>
+    </ul>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import Quagga from 'quagga'
+import { onMounted, ref } from 'vue'
+import { BrowserMultiFormatReader } from '@zxing/library';
+import * as ZXing from "@zxing/library";
 
-const video = ref(null)
-const barcodeData = ref('')
+const codeReader = ref(null);
+const scanResults = ref([]);
 
-const startCamera = async () => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-    video.value.srcObject = stream
-    Quagga.init({
-      inputStream : {
-        name : "Live",
-        type : "LiveStream",
-        target: document.querySelector('video'),
-      },
-      decoder : {
-        readers : ["ean_reader", "upc_reader", "code_128_reader", "code_39_reader", "code_93_reader"]
-      }
-    }, function(err) {
-      if (err) {
-        console.log(err);
-        return
-      }
-      console.log("Initialization finished. Ready to start");
-      Quagga.start();
-    });
-    Quagga.onDetected(function(result) {
-      barcodeData.value = result.codeResult.code;
-      console.log('Detected Barcode:', result.codeResult.code);
-      // 停止识别
-      Quagga.stop();
-    });
-  } catch (error) {
-    console.error('Error accessing camera:', error)
-  }
+// 初始化相机
+const startScan = () => {
+  codeReader.value = new BrowserMultiFormatReader();
+
+  codeReader.value.getVideoInputDevices().then(videoDevices => {
+    let deviceId = videoDevices[videoDevices.length - 1].deviceId;
+
+    if (videoDevices.length > 1) {
+      deviceId = videoDevices.find(el => el.label.includes('back') && el.label.includes('0'))?.deviceId || deviceId;
+    }
+
+    decodeFromInputVideoFunc(deviceId);
+  }).catch(err => {
+    console.error(err);
+  });
+}
+
+// 扫码
+const decodeFromInputVideoFunc = (deviceId) => {
+  codeReader.value.reset();
+  codeReader.value.decodeFromInputVideoDeviceContinuously(deviceId, 'video', (result, err) => {
+    if (result) {
+      // 打开baidu.com
+      window.open('https://www.baidu.com/s?wd=' + result.text, '_blank');
+      alert('扫码结果：' + result.text);
+      console.log('扫码结果', result);
+      scanResults.value.push(result.text);
+      codeReader.value.reset();
+      codeReader.value.stopContinuousDecodeFromInputVideoDevice();
+    }
+    if (err && !(err instanceof ZXing.NotFoundException)) {
+      console.error(err);
+    }
+  });
 }
 
 onMounted(() => {
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    startCamera()
-  }
-})
-
-onUnmounted(() => {
-  Quagga.offDetected();
-  Quagga.stop();
-})
+  // 初始化
+  startScan();
+});
 </script>
 
-<style scoped>
+<style scoped lang='scss'>
+.AboutView {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 video {
-  border: 1px solid #ccc;
+  margin-top: 20%;
+  width: 80%;
+}
+
+button {
+  margin-top: 1rem;
+  width: 8.4375rem;
+  height: 2.75rem;
+  font-size: 1.5625rem;
+  font-weight: 600;
+  color: lavenderblush;
+  background-color: rgba(0, 183, 255, 0.8);
+  border: none;
+  border-radius: 0.5rem;
+}
+
+ul {
+  margin-top: 1rem;
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  margin: 0.5rem 0;
 }
 </style>

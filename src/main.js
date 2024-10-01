@@ -5,6 +5,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import { VueQrcodeReader } from 'vue-qrcode-reader';
 
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 
@@ -15,4 +16,5 @@ pinia.use(piniaPluginPersistedstate)
 
 app.use(pinia)
 app.use(router)
+app.use(VueQrcodeReader);
 app.mount('#app')
