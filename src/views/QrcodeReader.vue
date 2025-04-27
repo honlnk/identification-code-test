@@ -34,7 +34,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
+  z-index: 999;
 }
 
 .qrcode-stream-box {
@@ -77,7 +77,7 @@
           <!-- 动态生成的小圆球 -->
           <template v-for="(code, index) in detectedCodes"
                     :key="index">
-            <div @click="openCode(code.rawValue)"
+            <div @click.stop="openCode(code.rawValue)"
                  :style="{
                   top: `${calculatePercentage(code.boundingBox.top, videoHeight)}%`,
                   left: `${calculatePercentage(code.boundingBox.left, videoWidth)}%`,
@@ -91,50 +91,50 @@
               </i>
             </div>
           </template>
-
+        </div>
+        <div class="text-box">
+          <!-- 说明文本与摄像头选择单选按钮 -->
+          <p>
+            <span>选择摄像头：</span>
+            <!-- 单选按钮用于选择摄像头 -->
+            <label v-for="option in constraintOptions" :key="option.label">
+              <input type="radio" :name="'camera-' + option.label" :value="option.constraints" v-model="selectedConstraints"/>
+              {{ option.label }}
+            </label>
+          </p>
+          <!-- 说明文本与追踪功能选择单选按钮 -->
+          <p>
+            <span>选择追踪功能：</span>
+            <!-- 单选按钮用于选择追踪功能 -->
+            <label v-for="option in trackFunctionOptions" :key="option.text">
+              <input type="radio" :name="'track-' + option.text" :value="option" v-model="trackFunctionSelected"/>
+              {{ option.text }}
+            </label>
+          </p>
+          <!-- 说明文本与条形码格式复选框 -->
+          <p>
+            <span>选择条形码格式：</span>
+            <!-- 单选按钮列表用于选择支持的条形码格式 -->
+            <label v-for="(mode, index) in Object.keys(barcodeModes)" :key="index">
+              <input type="radio" name="barcode-mode" :value="mode" v-model="selectedBarcodeMode"/>
+              {{ mode === 'both' ? '扫描条形码和二维码' : mode === 'barcodes' ? '仅扫描条形码' : '仅扫描二维码' }}
+            </label>
+          </p>
+          <!-- 错误信息展示区域 -->
+          <p class="error">{{ error }}</p>
+          <!-- 显示最后识别结果 -->
+          <p class="decode-result">
+            最后的结果：<b>{{ result }}</b>
+          </p>
+          <p>
+            <button @click="paused = !paused">{{ paused ? '继续/重新扫描' : '暂停扫描' }}</button>
+          </p>
         </div>
       </qrcode-stream>
     </div>
   </div>
 
-  <div class="text-box">
-    <!-- 说明文本与摄像头选择单选按钮 -->
-    <p>
-      <span>选择摄像头：</span>
-      <!-- 单选按钮用于选择摄像头 -->
-      <label v-for="option in constraintOptions" :key="option.label">
-        <input type="radio" :name="'camera-' + option.label" :value="option.constraints" v-model="selectedConstraints"/>
-        {{ option.label }}
-      </label>
-    </p>
-    <!-- 说明文本与追踪功能选择单选按钮 -->
-    <p>
-      <span>选择追踪功能：</span>
-      <!-- 单选按钮用于选择追踪功能 -->
-      <label v-for="option in trackFunctionOptions" :key="option.text">
-        <input type="radio" :name="'track-' + option.text" :value="option" v-model="trackFunctionSelected"/>
-        {{ option.text }}
-      </label>
-    </p>
-    <!-- 说明文本与条形码格式复选框 -->
-    <p>
-      <span>选择条形码格式：</span>
-      <!-- 单选按钮列表用于选择支持的条形码格式 -->
-      <label v-for="(mode, index) in Object.keys(barcodeModes)" :key="index">
-        <input type="radio" name="barcode-mode" :value="mode" v-model="selectedBarcodeMode"/>
-        {{ mode === 'both' ? '扫描条形码和二维码' : mode === 'barcodes' ? '仅扫描条形码' : '仅扫描二维码' }}
-      </label>
-    </p>
-    <!-- 错误信息展示区域 -->
-    <p class="error">{{ error }}</p>
-    <!-- 显示最后识别结果 -->
-    <p class="decode-result">
-      最后的结果：<b>{{ result }}</b>
-    </p>
-    <p>
-      <button @click="paused = !paused">{{ paused ? '继续/重新扫描' : '暂停扫描' }}</button>
-    </p>
-  </div>
+
 
 </template>
 
@@ -375,7 +375,3 @@ watchEffect(() => {
   }
 });
 </script>
-
-
-
-
