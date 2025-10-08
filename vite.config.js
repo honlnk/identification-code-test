@@ -10,6 +10,7 @@ import {ElementPlusResolver} from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: './',  // 使用相对路径
     plugins: [
         vue(),
         // elementPlus UI 按需导入
