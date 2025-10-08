@@ -1,13 +1,22 @@
 <template>
-  <div class='AboutView'>
+  <div class="about-container">
     <!-- 镜头区域 -->
-    <video ref="video" id="video" class="scan-video" autoplay></video>
+    <div class="scan-video-container">
+      <video ref="video" id="video" class="scan-video" autoplay></video>
+    </div>
 
-    <button @click="startScan">开始扫码</button>
+    <div class="scan-controls">
+      <button class="scan-btn" @click="startScan">📷 开始扫码</button>
+    </div>
 
-    <ul>
-      <li v-for="(item, index) in scanResults" :key="index">{{ item }}</li>
-    </ul>
+    <div class="scan-results">
+      <div class="results-title">📋 扫描历史</div>
+      <ul class="results-list">
+        <li v-for="(item, index) in scanResults" :key="index" class="result-item">
+          {{ item }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -61,37 +70,109 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang='scss'>
-.AboutView {
+<style scoped>
+.about-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #f5f7fa;
+  box-sizing: border-box;
 }
 
-video {
-  margin-top: 20%;
-  width: 80%;
+.scan-video-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  position: relative;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
 }
 
-button {
-  margin-top: 1rem;
-  width: 8.4375rem;
-  height: 2.75rem;
-  font-size: 1.5625rem;
+.scan-video {
+  width: 100%;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+.scan-controls {
+  margin: 20px 0;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+}
+
+.scan-btn {
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: 600;
-  color: lavenderblush;
-  background-color: rgba(0, 183, 255, 0.8);
+  color: white;
+  background-color: var(--primary-color);
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
 }
 
-ul {
-  margin-top: 1rem;
+.scan-btn:hover {
+  background-color: #66b1ff;
+  transform: translateY(-2px);
+}
+
+.scan-results {
+  width: 100%;
+  max-width: 500px;
+  margin-top: 20px;
+}
+
+.results-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark-color);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.results-list {
   list-style-type: none;
   padding: 0;
+  width: 100%;
 }
 
-li {
-  margin: 0.5rem 0;
+.result-item {
+  padding: 12px 16px;
+  margin: 8px 0;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-left: 4px solid var(--primary-color);
+  word-break: break-all;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 适配移动端 */
+@media (max-width: 768px) {
+  .about-container {
+    padding: 10px;
+  }
+  
+  .scan-video-container {
+    margin: 10px auto;
+  }
+  
+  .scan-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
 }
 </style>
