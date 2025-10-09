@@ -1,5 +1,7 @@
 # one-code-test
 
+<!-- 为了触发新的 GitHub Actions 工作流 -->
+
 This template should help get you started developing with Vue 3 in Vite.
 
 ## Recommended IDE Setup
