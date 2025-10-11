@@ -1,6 +1,10 @@
 # 识别码扫码应用 (Identification Code Scanner)
 
 # Ciallo
+# Ciallo
+# Ciallo
+# Ciallo
+# Ciallo
 
 > 一个基于 Vue 3 和 Vite 的现代化扫码识别应用，支持多种二维码/条形码格式的实时扫描与识别。
 
