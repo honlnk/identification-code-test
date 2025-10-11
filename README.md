@@ -76,6 +76,19 @@ npm run preview
 npm run lint
 ```
 
+### 运行测试
+
+```bash
+# 运行所有测试用例
+npm run test:run
+
+# 以监听模式运行测试
+npm run test
+
+# 启动 Vitest UI 界面
+npm run test:ui
+```
+
 ## 📱 使用说明
 
 1. **访问应用** - 打开浏览器访问应用页面 (支持移动设备浏览器)
@@ -110,6 +123,10 @@ identification-code-test/
 
 - **GitHub Pages**: [https://code-identify.honlnk.top](https://code-identify.honlnk.top)
 - **自定义域名**: [https://code-identify.honlnk.top](https://code-identify.honlnk.top)
+
+## 📋 部署说明
+
+本项目使用 GitHub Actions 实现自动部署，详情请参阅 [GitHub 工作流说明文档](./docs/github-workflow-explanation.md)。
 
 ## 🔒 权限说明
 

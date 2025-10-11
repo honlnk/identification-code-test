@@ -58,8 +58,7 @@ jobs:
 
       # 4. 运行测试 (如果存在)
       - name: Run tests
-        run: npm test
-        continue-on-error: true
+        run: npm run test:run
 
       # 5. 构建项目
       - name: Build project
@@ -112,8 +111,7 @@ jobs:
 
       # 4. 运行测试 (如果存在)
       - name: Run tests
-        run: npm test
-        continue-on-error: true
+        run: npm run test:run
 
       # 5. 构建项目
       - name: Build project
